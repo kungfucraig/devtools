@@ -1,0 +1,29 @@
+------------------------------------------------------------------------------
+General
+------------------------------------------------------------------------------
+Get all of this working on Windows
+  1. Only install ".cmd" scripts on Windows.
+  2. Only install non ".cmd" scripts on Other
+
+------------------------------------------------------------------------------
+Manged Edit
+------------------------------------------------------------------------------
+Support invoking different editors for different file types.
+
+File ignores on a per search path basis.
+
+Tests for SearchPath
+
+Formating of output lines using string.Template and a format line in config.xml
+
+------------------------------------------------------------------------------
+Code Gen
+------------------------------------------------------------------------------
+
+Built-in/example templates:
+   Java Doc?
+   Qt style functions?
+
+Modules
+
+

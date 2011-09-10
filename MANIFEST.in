@@ -1,0 +1,9 @@
+include README
+include RELEASES
+include TODO
+include src/scripts/me
+include src/scripts/me.cmd
+include src/scripts/cg
+include src/scripts/cg.cmd
+recursive-include src *.py
+recursive-include doc *

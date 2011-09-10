@@ -1,0 +1,98 @@
+------------------------------------------------------------------------------
+Written by Craig W. Wright <craig@craigwwright.com>
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+General
+------------------------------------------------------------------------------
+Dev tools is a collection of python programs that make developing other
+programs easier. In particular this suite of tools is designed to work in
+conjunction with a command shell (e.g. bash) and a standard text editor
+(e.g. vi, emacs).
+
+Configuration files for these tools can be found in "${HOME}/.devtools". 
+(For Windows specific stuff see the Windows section below.) The
+configuration files only appears after a particular tool is run for the
+first time, however no tool will overwrite an existing configuration.
+It is suggested that you run each tool and allow it to generate the default
+configuration file and use that as a template.
+
+All options for all tools along with the default values are written to the
+skeleton configuration file, however you may remove these lines from
+the configuration file at any time with no adverse effects.
+
+In addition to the command line utilities there are apis that may be
+invoked from any python program. Use of them is beyond the scope of
+this document, however the python source files are fairly well documented
+and the utilities are fairly simple so understanding them shouldn't be
+that big of a deal.
+
+------------------------------------------------------------------------------
+Manged Edit
+------------------------------------------------------------------------------
+Managed Edit (me) is driven by a database of files and file locations, where
+the keys are the basenames of the individual files.
+
+When you invoke Managed Edit with an argument it interpets it as a regular
+expression and then uses it to searches the database for an entry. If a single
+entry matches the EDITOR environment variable is invoked on the file. If zero
+entries match managed edit exits. If multiple entries match managed edit
+goes into an interactive narrowing until either there is exactly 0 or 1 matches.
+
+The database is generated based upon entries in the configuration file found
+in "${HOME}/.devtools/managededit.conf". As noted above "me" generates a
+sample file upon its first invocation.
+
+See the configuration file for a complete listing of valid options.
+
+Also try "me --help".
+
+------------------------------------------------------------------------------
+Code Gen
+------------------------------------------------------------------------------
+Codegen (cg) is a tool for automatically generating code snippets or
+templates. For example, many of us have a standard block of text we like to
+put at the top of files which might be paramerized with today's date, your
+email address, and your name.
+
+Codegen allows you to generate code from parameterized templates using a
+set of predefined variables, the current set of environment variables,
+a set of variables defined in the codegen configuration file, and a 
+set of variables passed on the command line.
+
+The set of predefined variables is printed to the configuration template file,
+which can be found in the file src/modules/devtools/codegen/configuration.py
+
+An example template file can be found in the 'doc/templates' directory.
+
+Integrations with emacs can be found under 'doc/integrations'.
+
+------------------------------------------------------------------------------
+Miscellaneous
+------------------------------------------------------------------------------
+Avoid spaces in the EDITOR variable.
+
+################################
+# Useful bash functions
+################################
+function ccd
+{
+   x=`me -d $@`
+   if [ -n "$x" ]
+   then
+     cd $x
+   fi
+}
+
+------------------------------------------------------------------------------
+Windows
+------------------------------------------------------------------------------
+Configuration files are automatically placed in the "Application Data/devtools"
+directory, or rather in the directory that the environment variabe APPDATA
+points to.
+
+Put python.exe on your PATH.
+
+It will also be necessary to have {PYTHON_INSTALL_DIR}/Scripts on your path too
+(e.g. C:/Python26/Scripts).
+
