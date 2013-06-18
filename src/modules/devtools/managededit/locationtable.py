@@ -1,7 +1,7 @@
 """
 This files defines the class LocationTable.
 
-Copyright (C) 2009 Craig W. Wright
+Copyright (C) 2009 Craig W. Wright and 2013 Google. All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ class LocationTable:
       """
          Search the location table for the entries that match searchPattern and
          return them as a list. A list of tuples is returned where the first entry
-         in each tuple is the basename of the file and the second entry is the full 
+         in each tuple is the basename of the file and the second entry is the full
          path. The search is done on the base name.
       """
       exp = re.compile(str(searchPattern))
@@ -80,11 +80,14 @@ class LocationTable:
       cursor = db.cursor()
 
       ret = SearchResult()
+      exactMatches=[]
       try:
          item = cursor.first()
          while item:
             if exp.search(item[0]):
                ret.append(item)
+            if searchPattern == item[0]:
+              exactMatches.append(item)
             item = cursor.next()
       finally:
          cursor.close()
@@ -96,7 +99,12 @@ class LocationTable:
             for f in files:
                if exp.search(f):
                   ret.append(tuple([f, os.path.join(".",f)]))
+               if searchPattern == f:
+                 exactMatches.append(item)
 
+      if len(exactMatches) == 1:
+        ret = SearchResult()
+        ret.append(exactMatches[0])
 
       return ret
 
@@ -156,15 +164,16 @@ class SearchResult:
          self.results_ = [self.results_[int(input[0])]]
       else:
          exp = re.compile(criteria)
-         results = []
-         for r in self.results_:
-            if exp.search(r[0]):
-               results.append(r)
-         self.results_ = results
+         self.results_ = [r for r in self.results_ if exp.search(r[0])]
+
+   def getCommonDirectory(self):
+     """If all results live in a common directory return it."""
+     dirs = set([os.path.dirname(res[1]) for res in self.results_])
+     return dirs.pop() if len(dirs) == 1 else None
 
    def list(self):
       for i,r in zip(range(len(self.results_)), self.results_):
-         sys.stderr.write(str(i) + ". " + str(r) + "\n")
+         sys.stderr.write(str(i) + ". " + str(os.path.join(r[0])) + "\n")
 
    def dump(self):
       for r in self.results_:

@@ -1,7 +1,7 @@
 """
 This files defines the class SearchPath.
 
-Copyright (C) 2009 Craig W. Wright
+Copyright (C) 2009 Craig W. Wright and 2013 Google. All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import re
+import sys
 
 import devtools.common.utility
 
@@ -32,7 +33,7 @@ class SearchPath:
       It is expected that the search path will be able to handle specific ignore
       directives in the future. For now all ignores must be passed in from the
       outside (which is quite workable for a strictly global set of ignores)
- 
+
    """
 
    def __init__(self, path, recursive):
@@ -59,7 +60,7 @@ class SearchPath:
            If a file matches any of these patterns then do not yield it.
 
       """
-      dirIgnores = dirIgnores[:] 
+      dirIgnores = dirIgnores[:]
       dirIgnores.extend(self.dirIgnores_)
 
       for root, dirs, files in os.walk(self.path_):
@@ -81,4 +82,3 @@ class SearchPath:
                for i in fileIgnores:
                   if not i.search(f):
                      yield os.path.join(root, f)
- 

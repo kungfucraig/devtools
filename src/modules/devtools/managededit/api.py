@@ -1,7 +1,7 @@
 """
 This files defines some API functions.
 
-Copyright (C) 2009 Craig W. Wright
+Copyright (C) 2009 Craig W. Wright and 2013 Google. All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ def me_main():
                      "--find-directory",
                      action="store",
                      dest="directoryExpression",
-                     help="Given an expression invoke the interactive narrowing process to allow the selection of a unique file. Once a unique file is found print the directory in which the file resides to stdout.")
+                     help="Given an expression invoke the interactive narrowing process to allow the selection of a unique directory. Once a unique directory is found print the directory in which the file(s) reside to stdout.")
 
    parser.add_option("-f",
                      "--find-file",
@@ -97,11 +97,10 @@ def me_main():
       pass
    except:
       raise
-      
+
 
 def rebuildLocationTable(configuration):
-   """
-      Rebuild the location table
+   """Rebuild the location table
 
       @returns The length of the location table.
    """
@@ -109,9 +108,9 @@ def rebuildLocationTable(configuration):
    lt.rebuild()
    return len(lt)
 
+
 def dumpLocationTable(configuration, fileobject):
-   """
-      Dump the location table to stdout.
+   """Dump the location table to stdout.
 
       @param fileobject
       An object that supports the write method.
@@ -119,9 +118,9 @@ def dumpLocationTable(configuration, fileobject):
    lt = LocationTable(configuration)
    lt.dump(fileobject)
 
+
 def findRecord(configuration, pattern):
-   """
-      Find the record tuple given a pattern.
+   """Find the record tuple given a pattern.
    """
    lt = LocationTable(configuration)
    res = lt.search(str(pattern))
@@ -137,20 +136,25 @@ def findRecord(configuration, pattern):
    else:
       return None
 
+
 def findDirectory(configuration, pattern):
-   """
-      Given a pattern call find record, but just return the
+   """Given a pattern call find record, but just return the
       directory that the file associated with the record is in.
    """
-   r = findRecord(configuration, pattern)
-   if not r:
-      return None
-   else:
-      return os.path.dirname(r[1]) 
+   lt = LocationTable(configuration)
+   res = lt.search(str(pattern))
+
+   while not res.getCommonDirectory() and len(res):
+      res.list()
+      sys.stderr.write("> ")
+      criteria = raw_input()
+      res.narrow(criteria)
+
+   return os.path.dirname(res[0][1]) if len(res) else None
+
 
 def findFile(configuration, pattern):
-   """
-      Given a pattern call find record. Then return the
+   """Given a pattern call find record. Then return the
       full path that the file associated with the record is in.
    """
    r = findRecord(configuration, pattern)
@@ -161,12 +165,10 @@ def findFile(configuration, pattern):
 
 
 def editFile(configuration, pattern):
-   """
-      Given a pattern call find record. Then use the return directory
+   """Given a pattern call find record. Then use the return directory
       and invoke the editor stored in the configuration.
    """
-   r = findRecord(configuration, pattern)
-   if r:
-      command = configuration.getEditor() + ' "' + r[1] + '"'
+   f = findFile(configuration, pattern)
+   if f:
+      command = configuration.getEditor() + ' "' + f + '"'
       subprocess.Popen(command, shell=True)
-
