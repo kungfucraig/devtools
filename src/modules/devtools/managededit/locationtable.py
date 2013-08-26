@@ -75,12 +75,22 @@ class LocationTable:
          in each tuple is the basename of the file and the second entry is the full
          path. The search is done on the base name.
       """
+      ret = SearchResult()
       exp = re.compile(str(searchPattern))
+      exactMatches=[]
+
+      if self.config_.getOptionValue("searchCurrentWorkingDirectory"):
+         for (root, dirs, files) in os.walk("."):
+            dirs[:] = []
+            for f in files:
+               if exp.search(f):
+                  ret.append(tuple([f, os.path.join(os.getcwd(), f)]))
+               if searchPattern == f:
+                 exactMatches.append(os.path.join(os.getcwd(), f))
+
       db = self._opendb()
       cursor = db.cursor()
 
-      ret = SearchResult()
-      exactMatches=[]
       try:
          item = cursor.first()
          while item:
@@ -93,18 +103,11 @@ class LocationTable:
          cursor.close()
          self._closedb(db)
 
-      if self.config_.getOptionValue("searchCurrentWorkingDirectory"):
-         for (root, dirs, files) in os.walk("."):
-            dirs[:] = []
-            for f in files:
-               if exp.search(f):
-                  ret.append(tuple([f, os.path.join(".",f)]))
-               if searchPattern == f:
-                 exactMatches.append(item)
-
       if len(exactMatches) == 1:
         ret = SearchResult()
         ret.append(exactMatches[0])
+
+      ret.uniqify()
 
       return ret
 
@@ -170,6 +173,9 @@ class SearchResult:
      """If all results live in a common directory return it."""
      dirs = set([os.path.dirname(res[1]) for res in self.results_])
      return dirs.pop() if len(dirs) == 1 else None
+
+   def uniqify(self):
+     self.results_ = sorted(set(self.results_))
 
    def list(self):
       for i,r in zip(range(len(self.results_)), self.results_):
