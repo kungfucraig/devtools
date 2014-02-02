@@ -3,6 +3,8 @@ General
 ------------------------------------------------------------------------------
 
 Fold in shell stuff from devtools.sh, go, ets...
+Added a terminal clipboard program with a stack of copy/paste
+items, and perhaps registers, emacs extensions, tmux extensions.
 
 Tests.
 
