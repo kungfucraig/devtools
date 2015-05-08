@@ -3,7 +3,7 @@
 # variable DT_GO_FILE. The format of the file is as follows:
 
 if [ -z "$DT_GO_FILE" ]; then
-    export DT_GO_FILE=${HOME}/.devtools/go_locations
+    export DT_GO_FILE=${DT_CONFIG_DIR}/go_locations
 fi
 
 ##############################################

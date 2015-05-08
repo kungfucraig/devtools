@@ -7,6 +7,8 @@ if [ -z ${DT_DIR} ]; then
     return
 fi
 
+export DT_CONFIG_DIR="${HOME}/.devtools"
+
 source ${DT_DIR}/shellutil/go.sh
 source ${DT_DIR}/shellutil/edit.sh
 source ${DT_DIR}/shellutil/sandbox.sh
