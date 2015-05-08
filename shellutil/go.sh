@@ -19,7 +19,7 @@ fi
 # object:${USER_OBJECT_DIR}
 # debug:${USER_OBJECT_DIR}/debug
 ###############################################
-function go
+function dt_go
 {
     if [ -z "${DT_GO_FILE}" ]; then
         echo "The variable DT_GO_FILE is not set."

@@ -7,7 +7,7 @@ if [ -z "${EDITOR}" ]; then
     export EDITOR=vi
 fi
 
-function edit {
+function dt_edit {
     if [ -z "${EDITOR}" ]; then
         echo "ERROR: the variable editor must be set"
         return
