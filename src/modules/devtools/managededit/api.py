@@ -120,8 +120,7 @@ def dumpLocationTable(configuration, fileobject):
 
 
 def findRecord(configuration, pattern):
-   """Find the record tuple given a pattern.
-   """
+   """Find the record tuple given a pattern."""
    lt = LocationTable(configuration)
    res = lt.search(str(pattern))
 

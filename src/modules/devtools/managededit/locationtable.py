@@ -86,7 +86,7 @@ class LocationTable:
                if exp.search(f):
                   ret.append(tuple([f, os.path.join(os.getcwd(), f)]))
                if searchPattern == f:
-                 exactMatches.append(os.path.join(os.getcwd(), f))
+                 exactMatches.append((f, os.path.join(os.getcwd(), f)))
 
       db = self._opendb()
       cursor = db.cursor()

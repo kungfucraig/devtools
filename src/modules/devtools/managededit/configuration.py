@@ -26,7 +26,7 @@ import devtools.common.configuration
 import devtools.common.utility
 from devtools.common.option import *
 
-from devtools.managededit.searchpath import SearchPath 
+from devtools.managededit.searchpath import SearchPath
 
 class Configuration(devtools.common.configuration.Configuration):
    """
@@ -45,7 +45,7 @@ class Configuration(devtools.common.configuration.Configuration):
          For true/false options, only true or false are accepted as
          values.
       -->
-      <Option key="searchCurrentWorkingDirectory" value="false"/> 
+      <Option key="searchCurrentWorkingDirectory" value="false"/>
    </Options>
 
    <GlobalIgnores>
@@ -83,7 +83,7 @@ class Configuration(devtools.common.configuration.Configuration):
             createConfigurationFile,
             self.sampleConfigurationFile_)
 
-      self.searchPaths_ = set() 
+      self.searchPaths_ = set()
       self.fileIgnores_ = []
       self.dirIgnores_ = []
 
@@ -94,9 +94,9 @@ class Configuration(devtools.common.configuration.Configuration):
          self.editor_ = os.environ["EDITOR"]
 
       self.locationTableFile_ = "location_table"
-      
+
       # Create the configuration file.
-      self.conditionallyCreateConfigurationFile() 
+      self.conditionallyCreateConfigurationFile()
 
       if os.path.exists(self.getConfigurationFileFullPath()):
          p = ConfigurationFileParser(self)
@@ -164,13 +164,13 @@ class ConfigurationFileParser:
       self.reset()
 
    def reset(self):
-      self.state_ = None 
+      self.state_ = None
       self.currentSearchPath_ = None
 
    def parse(self, filename):
       p = xml.parsers.expat.ParserCreate()
-      p.StartElementHandler = self.startElement 
-      p.EndElementHandler = self.endElement 
+      p.StartElementHandler = self.startElement
+      p.EndElementHandler = self.endElement
 
       f = open(filename)
 
@@ -273,5 +273,3 @@ class ConfigurationFileParser:
 
       self.currentSearchPath_ = SearchPath(path, recursive)
       self.configuration_.addSearchPath(self.currentSearchPath_)
-
-

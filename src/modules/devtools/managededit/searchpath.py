@@ -50,6 +50,9 @@ class SearchPath:
    def addDirectoryIgnore(self, patternString):
       self.dirIgnores_.append(re.compile(devtools.common.utility.substituteEnvironment(patternString)))
 
+   def __str__(self):
+      return "[%s recursive=%s]" % (self.path_, self.recursive_)
+
    def walk(self, dirIgnores=[], fileIgnores=[]):
       """
          @param dirIgnores
