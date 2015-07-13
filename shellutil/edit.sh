@@ -20,7 +20,7 @@ function dt_edit {
 
     me=`which me`
     if [ -n ${me} ]; then
-        f=`$me -f $1`
+        f=`$me -f $@`
         if [ ! -z "${f}" ]; then
             command="$EDITOR $f"
             eval $command

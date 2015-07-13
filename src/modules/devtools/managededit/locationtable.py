@@ -78,6 +78,7 @@ class LocationTable:
       ret = SearchResult()
       exp = re.compile(str(searchPattern))
       exactMatches=[]
+      cwdExactMatches = []
 
       if self.config_.getOptionValue("searchCurrentWorkingDirectory"):
          for (root, dirs, files) in os.walk("."):
@@ -86,7 +87,7 @@ class LocationTable:
                if exp.search(f):
                   ret.append(tuple([f, os.path.join(os.getcwd(), f)]))
                if searchPattern == f:
-                 exactMatches.append((f, os.path.join(os.getcwd(), f)))
+                  cwdExactMatches.append((f, os.path.join(os.getcwd(), f)))
 
       db = self._opendb()
       cursor = db.cursor()
@@ -106,6 +107,10 @@ class LocationTable:
       if len(exactMatches) == 1:
         ret = SearchResult()
         ret.append(exactMatches[0])
+
+      if len(cwdExactMatches) == 1:
+         ret = SearchResult()
+         ret.append(cwdExactMatches[0])
 
       ret.uniqify()
 
