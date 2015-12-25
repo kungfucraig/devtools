@@ -182,9 +182,47 @@ class SearchResult:
    def uniqify(self):
      self.results_ = sorted(set(self.results_))
 
+   def _uniqifyGroup(self, i):
+      same = []
+      same.append(self.results_[i])
+      if i+1 < len(self.results_):
+        for r in self.results_[i+1:]:
+            if r[0] == same[0][0]:
+               same.append(r)
+            else:
+               break
+
+      if len(same) == 1:
+         return [""]
+
+      ret = []
+      # It would be good to actually look at path commonality and
+      # be more sophisticated here, but this is easy and good enough
+      # for my current purpose.
+      for s in same:
+         components = s[1].split("/")
+         size = 4
+         if len(components) < size:
+            size = len(components)-1
+         ret.append("/".join(components[-size:-1]))
+
+      return ret
+
    def list(self):
-      for i,r in zip(range(len(self.results_)), self.results_):
-         sys.stderr.write(str(i) + ". " + str(os.path.join(r[0])) + "\n")
+      i = 0
+      while i < len(self.results_):
+         uniquePathsForGroup = self._uniqifyGroup(i);
+         for (j, u) in zip(range(i, i+len(uniquePathsForGroup)),uniquePathsForGroup):
+            if not u:
+               out = "%d. %s\n" % (i, self.results_[j][0])
+            else:
+               out = "%d. %s - (%s)\n" % (j, self.results_[j][0], u)
+            sys.stderr.write(out)
+         i += len(uniquePathsForGroup)
+
+      # older implementation
+      #for i,r in zip(range(len(self.results_)), self.results_):
+      #   sys.stderr.write(str(i) + ". " + str(os.path.join(r[0])) + "\n")
 
    def dump(self):
       for r in self.results_:
