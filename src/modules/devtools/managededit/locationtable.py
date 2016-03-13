@@ -18,11 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-from bsddb.db import *
+import sqlite3
 import sys
 import re
 
 from devtools.managededit.configuration import Configuration
+
+TABLE_NAME="Location"
 
 
 class LocationTable:
@@ -33,40 +35,46 @@ class LocationTable:
       self.config_ = configuration
 
    def __len__(self):
-      db = self._opendb()
-      l = len(db)
-      self._closedb(db)
+      conn = self._opendb()
+      c = conn.cursor()
+      c.execute('''SELECT count(*) FROM %s''' % (TABLE_NAME))
+      l = c.fetchone()[0]
+      self._closedb(conn)
       return l
 
-   def _opendb(self, dbflags=None):
-      db = DB()
-      db.set_flags(DB_DUP)
-      db.open(self.config_.getLocationTableFileFullPath(),
-              dbtype=DB_BTREE,
-              flags=(dbflags if dbflags else DB_CREATE))
-      return db
+   def _opendb(self, rebuild=False):
+      if rebuild:
+         if os.path.isfile(self.config_.getLocationTableFileFullPath()):
+            os.remove(self.config_.getLocationTableFileFullPath())
+         conn = sqlite3.connect(self.config_.getLocationTableFileFullPath())
+         c = conn.cursor()
+         c.execute('''CREATE TABLE %s (basename, fullpath)''' % (TABLE_NAME))
+         conn.commit()
+         return conn
+      else:
+         return sqlite3.connect(self.config_.getLocationTableFileFullPath())
 
-
-   def _closedb(self, db):
-      db.sync()
-      db.close()
+   def _closedb(self, conn):
+      conn.close()
 
    def rebuild(self):
       """
          Rebuild the location table by traversing all of the SearchPaths
          associated with the Configuration.
       """
-      db = self._opendb(DB_TRUNCATE|DB_CREATE)
+      conn = self._opendb(rebuild=True)
+      c = conn.cursor()
 
       try:
          for sp in self.config_.getSearchPaths():
             for f in sp.walk(self.config_.getDirectoryIgnores(),
                              self.config_.getFileIgnores()):
                base = os.path.basename(f)
-               db.put(str(base), str(f))
-
+               command = "INSERT INTO %s VALUES ('%s','%s')" % (TABLE_NAME, base, f)
+               c.execute(command)
       finally:
-         self._closedb(db)
+         conn.commit()
+         self._closedb(conn)
 
    def search(self, searchPattern):
       """
@@ -89,20 +97,18 @@ class LocationTable:
                if searchPattern == f:
                   cwdExactMatches.append((f, os.path.join(os.getcwd(), f)))
 
-      db = self._opendb()
-      cursor = db.cursor()
+      conn = self._opendb()
+      c = conn.cursor()
+      c.execute('''SELECT * FROM %s''' % TABLE_NAME)
 
       try:
-         item = cursor.first()
-         while item:
+         for item in c:
             if exp.search(item[0]):
                ret.append(item)
             if searchPattern == item[0]:
               exactMatches.append(item)
-            item = cursor.next()
       finally:
-         cursor.close()
-         self._closedb(db)
+         self._closedb(conn)
 
       if len(exactMatches) == 1:
         ret = SearchResult()
@@ -123,17 +129,14 @@ class LocationTable:
          @param fileobject
          A object that supports a write method.
       """
-      db = self._opendb()
-      cursor = db.cursor()
-
+      conn = self._opendb()
+      c = conn.cursor()
+      c.execute('''SELECT * FROM %s''' % TABLE_NAME)
       try:
-         item = cursor.first()
-         while item:
-            fileobject.write(str(item) + "\n")
-            item = cursor.next()
+         for row in c:
+            print row
       finally:
-         cursor.close()
-         self._closedb(db)
+         self._closedb(conn)
 
 
 class SearchResult:
