@@ -55,7 +55,7 @@ function dt_go
     if [ -n "${dest}" ]; then
         cd `eval echo $dest`
     else
-        echo "Invalid location, valid locations are:"
+        echo "No matching locations. Preset locations are:"
         cat ${DT_GO_FILE}
     fi
 }

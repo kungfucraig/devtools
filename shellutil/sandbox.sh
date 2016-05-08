@@ -1,4 +1,4 @@
-#
+
 # Setup the idea of a sandbox where subdirectories under a common
 # subdirectory name 'sandboxes'.
 #
@@ -11,11 +11,11 @@ fi
 
 function dt_read_sandbox {
     if [ -e $DT_SANDBOX_FILE ]; then
-        export DT_CURRENT_SANDBOX=`cat $DT_SANDBOX_FILE`
+        export DT_SANDBOX_CURRENT=`cat $DT_SANDBOX_FILE`
     else
-        export DT_CURRENT_SANDBOX="default"
+        export DT_SANDBOX_CURRENT="default"
     fi
-    export DT_WORK_DIR=${DT_SANDBOX_ROOT}/${DT_CURRENT_SANDBOX}
+    export DT_WORK_DIR=${DT_SANDBOX_ROOT}/${DT_SANDBOX_CURRENT}
     mkdir -p ${DT_WORK_DIR}
 }
 

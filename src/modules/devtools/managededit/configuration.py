@@ -93,10 +93,18 @@ class Configuration(devtools.common.configuration.Configuration):
       if os.environ.has_key("EDITOR"):
          self.editor_ = os.environ["EDITOR"]
 
-      self.locationTableFile_ = "location_table"
+      self.locationTableSubdir_ = "location_table"
+      if os.environ.has_key("DT_SANDBOX_CURRENT"):
+         self.locationTableFile_ = os.environ["DT_SANDBOX_CURRENT"]
+      else:
+         self.locationTableFile_ = "location_table"
+
 
       # Create the configuration file.
       self.conditionallyCreateConfigurationFile()
+
+      # Create the location table dir.
+      self.conditionallyCreateLocationTableDir()
 
       if os.path.exists(self.getConfigurationFileFullPath()):
          p = ConfigurationFileParser(self)
@@ -114,12 +122,21 @@ class Configuration(devtools.common.configuration.Configuration):
       """
       return self.locationTableFile_
 
+   def getLocationTableSubdirFullPath(self):
+      """
+         Get the full path to the location table.
+      """
+      return os.path.join(
+         self.getConfigurationDirectory(),
+         self.locationTableSubdir_)
+
    def getLocationTableFileFullPath(self):
       """
          Get the full path to the location table.
       """
       return os.path.join(
          self.getConfigurationDirectory(),
+         self.locationTableSubdir_,
          self.locationTableFile_)
 
    def addSearchPath(self, searchpath):
@@ -146,6 +163,11 @@ class Configuration(devtools.common.configuration.Configuration):
        """
        self.clearOptions()
        self.addOption(BooleanOption("searchCurrentWorkingDirectory", False))
+
+   def conditionallyCreateLocationTableDir(self):
+      if self.getConfigurationDirectory() != self.getLocationTableSubdirFullPath():
+         if os.path.exists(self.getLocationTableSubdirFullPath()) == False:
+            os.mkdir(self.getLocationTableSubdirFullPath())
 
 
 class ConfigurationFileParser:
