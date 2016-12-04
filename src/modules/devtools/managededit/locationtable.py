@@ -88,14 +88,18 @@ class LocationTable:
       exactMatches=[]
       cwdExactMatches = []
 
-      if self.config_.getOptionValue("searchCurrentWorkingDirectory"):
-         for (root, dirs, files) in os.walk("."):
-            dirs[:] = []
-            for f in files:
-               if exp.search(f):
-                  ret.append(tuple([f, os.path.join(os.getcwd(), f)]))
-               if searchPattern == f:
-                  cwdExactMatches.append((f, os.path.join(os.getcwd(), f)))
+      if os.path.isfile(searchPattern):
+         cwdExactMatches.append(
+            (searchPattern, os.path.join(os.getcwd(), searchPattern)))
+      else:
+         if self.config_.getOptionValue("searchCurrentWorkingDirectory"):
+            for (root, dirs, files) in os.walk("."):
+               dirs[:] = []
+               for f in files:
+                  if exp.search(f):
+                     ret.append(tuple([f, os.path.join(os.getcwd(), f)]))
+                     if searchPattern == f:
+                        cwdExactMatches.append((f, os.path.join(os.getcwd(), f)))
 
       conn = self._opendb()
       c = conn.cursor()
