@@ -37,6 +37,6 @@ function dt_set_sandbox {
         # rebuild location table and go to work dir
         # TODO: make options out of these
         cd ${DT_WORK_DIR}
-        me -r
+        me -r &
     fi
 }
