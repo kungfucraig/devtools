@@ -6,7 +6,7 @@ if platform.system() == "Windows":
 else:
    scriptsToInstall=['src/scripts/me', 'src/scripts/cg']
 
-print scriptsToInstall
+print(scriptsToInstall)
 
 setup(name="devtools",
       version="0.1",

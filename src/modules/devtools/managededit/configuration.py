@@ -90,11 +90,11 @@ class Configuration(devtools.common.configuration.Configuration):
       self.setDefaultOptions()
 
       self.editor_ = None
-      if os.environ.has_key("EDITOR"):
+      if "EDITOR" in os.environ:
          self.editor_ = os.environ["EDITOR"]
 
       self.locationTableSubdir_ = "location_table"
-      if os.environ.has_key("DT_SANDBOX_CURRENT"):
+      if "DT_SANDBOX_CURRENT" in os.environ:
          self.locationTableFile_ = os.environ["DT_SANDBOX_CURRENT"]
       else:
          self.locationTableFile_ = "location_table"
@@ -194,7 +194,7 @@ class ConfigurationFileParser:
       p.StartElementHandler = self.startElement
       p.EndElementHandler = self.endElement
 
-      f = open(filename)
+      f = open(filename, 'rb')
 
       try:
          p.ParseFile(f)
@@ -235,9 +235,9 @@ class ConfigurationFileParser:
       self.state_ = newstate
 
    def handleOption(self, attrs):
-      if not attrs.has_key('key'):
+      if 'key' not in attrs:
          raise RuntimeError("Option element has no attribute 'key'.")
-      if not attrs.has_key('value'):
+      if 'value' not in attrs:
          raise RuntimeError("Option element has no attribute 'value'.")
 
       key=attrs['key']
@@ -245,7 +245,7 @@ class ConfigurationFileParser:
       self.configuration_.setOption(key, value)
 
    def handleFileIgnore(self, attrs):
-      if not attrs.has_key('pattern'):
+      if 'pattern' not in attrs:
          raise RuntimeError("IgnoreFile element has no attribute 'pattern'.")
       pattern = attrs['pattern']
 
@@ -263,7 +263,7 @@ class ConfigurationFileParser:
          There should be a way to combine this code with
          the code in handleFileIgnore
       """
-      if not attrs.has_key('pattern'):
+      if 'pattern' not in attrs:
          raise RuntimeError("IgnoreDirectory element has no attribute 'pattern'.")
       pattern = attrs['pattern']
 
@@ -278,13 +278,13 @@ class ConfigurationFileParser:
 
 
    def handleSearchPath(self, attrs):
-      if not attrs.has_key('path'):
+      if 'path' not in attrs:
          raise RuntimeError("SearchPath element has no attribute 'path'.")
       if not self.IN_SEARCHPATHS:
          raise RuntimeError("SearchPath elements must be nested in the 'SearchPaths' tag.")
       path = attrs['path']
       recursive = False
-      if attrs.has_key('recursive'):
+      if 'recursive' in attrs:
          rval = attrs['recursive']
          if rval == "true":
             recursive = True

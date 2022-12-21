@@ -94,7 +94,7 @@ def cg_main():
       else:
          sys.stderr.write(parser.format_help())
          sys.exit(1)
-   except KeyboardInterrupt, k:
+   except KeyboardInterrupt as k:
       pass
    except:
       raise

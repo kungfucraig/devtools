@@ -49,7 +49,7 @@ class Configuration(devtools.common.configuration.Configuration):
 
          For datetime, date, and time format possibilities, see the
          python reference for datetime.
-       
+
          <Option key="datetimeformat" value="%Y-%m-%d %H:%M:%S"/>
          <Option key="dateformat" value="%Y-%m-%d"/>
          <Option key="timeformat" value="%H:%M:%S"/>
@@ -57,7 +57,7 @@ class Configuration(devtools.common.configuration.Configuration):
    </Options>
 
    <Variables>
-      <!-- 
+      <!--
         The following default variables are predefined:
            year (YYYY), month (MM), day (DD), datetime, date, and time.
 
@@ -69,7 +69,7 @@ class Configuration(devtools.common.configuration.Configuration):
    </Variables>
 
    <Generators>
-      <!-- 
+      <!--
          This is an example template definition. ${VARIABLE} refers to
          an environment variable.
          <Template name="ch" path="${HOME}/path/to/cppInclude.template"/>
@@ -102,20 +102,20 @@ class Configuration(devtools.common.configuration.Configuration):
 
 
       # Create the configuration file.
-      self.conditionallyCreateConfigurationFile() 
+      self.conditionallyCreateConfigurationFile()
 
       if os.path.exists(self.getConfigurationFileFullPath()):
          p = ConfigurationFileParser(self)
          p.parse(self.getConfigurationFileFullPath())
-         
+
    def addGenerator(self, generator):
-      if self.generators_.has_key(generator.getName()):
-         raise ValueError("A Generator with the name: '" + self.generator_.getName() + "' already exists.") 
+      if generator.getName() in self.generators_:
+         raise ValueError("A Generator with the name: '" + self.generator_.getName() + "' already exists.")
       self.generators_[generator.getName()] = generator;
 
    def getGenerator(self, name):
       name = str(name)
-      if not self.generators_.has_key(name):
+      if name not in self.generators_:
          raise ValueError("Unknown generator: '" + name + "'.")
       return self.generators_[name]
 
@@ -150,15 +150,15 @@ class Configuration(devtools.common.configuration.Configuration):
       variables["datetime"] = now.strftime(self.getOption("datetimeformat").getValue())
 
       # Next is the environment.
-      for k,v in os.environ.iteritems():
+      for k,v in list(os.environ.items()):
          variables[k] = v
 
       # Finally user variables.
-      for k,v in self.variables_.iteritems():
+      for k,v in list(self.variables_.items()):
          variables[k] = v
 
       if localVariables:
-         for k,v in localVariables.iteritems():
+         for k,v in list(localVariables.items()):
             variables[k] = v
 
       return variables
@@ -183,14 +183,14 @@ class ConfigurationFileParser:
       self.reset()
 
    def reset(self):
-      self.state_ = None 
+      self.state_ = None
 
    def parse(self, filename):
       p = xml.parsers.expat.ParserCreate()
-      p.StartElementHandler = self.startElement 
-      p.EndElementHandler = self.endElement 
+      p.StartElementHandler = self.startElement
+      p.EndElementHandler = self.endElement
 
-      f = open(filename)
+      f = open(filename, 'rb')
 
       try:
          p.ParseFile(f)
@@ -225,9 +225,9 @@ class ConfigurationFileParser:
       self.state_ = newstate
 
    def handleOption(self, attrs):
-      if not attrs.has_key('key'):
+      if 'key' not in attrs:
          raise RuntimeError("Option element has no attribute 'key'.")
-      if not attrs.has_key('value'):
+      if 'value' not in attrs:
          raise RuntimeError("Option element has no attribute 'value'.")
 
       key=attrs['key']
@@ -235,23 +235,18 @@ class ConfigurationFileParser:
       self.configuration_.setOption(key, value)
 
    def handleTemplate(self, attrs):
-      if not attrs.has_key('name'):
+      if 'name' not in attrs:
          raise RuntimeError("Option element has no attribute 'name'.")
-      if not attrs.has_key('path'):
+      if 'path' not in attrs:
          raise RuntimeError("Option element has no attribute 'path'.")
 
       t = Template(attrs['name'], attrs['path'])
       self.configuration_.addGenerator(t)
 
    def handleVariable(self, attrs):
-      if not attrs.has_key('key'):
+      if 'key' not in attrs:
          raise RuntimeError("Variable element has no attribute 'key'.")
-      if not attrs.has_key('value'):
+      if 'value' not in attrs:
          raise RuntimeError("Variable element has no attribute 'value'.")
 
       self.configuration_.setVariable(attrs['key'], attrs['value'])
-
-
-
-
-

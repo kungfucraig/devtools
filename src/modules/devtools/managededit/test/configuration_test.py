@@ -36,24 +36,24 @@ class ConfigurationTest(unittest.TestCase):
       self.removeConfDir(self.confDir_)
 
    def testC1(self):
-      self.assert_(self.c1_.getEditor() == None)
+      self.assertTrue(self.c1_.getEditor() == None)
 
    def testC2(self):
-      self.assert_(self.c2_.getEditor() == self.testEditorName_)
-      self.assert_(self.c2_.getConfigurationDirectory()
+      self.assertTrue(self.c2_.getEditor() == self.testEditorName_)
+      self.assertTrue(self.c2_.getConfigurationDirectory()
                    ==
                    self.confDir_)
-      self.assert_(self.c2_.getLocationTableFile()
+      self.assertTrue(self.c2_.getLocationTableFile()
                    ==
                    "location_table")
-      self.assert_(self.c2_.getLocationTableFileFullPath()
+      self.assertTrue(self.c2_.getLocationTableFileFullPath()
                    ==
                    os.path.join(self.c2_.getConfigurationDirectory(),
                                 self.c2_.getLocationTableFile()))
-      self.assert_(self.c2_.getConfigurationFile()
+      self.assertTrue(self.c2_.getConfigurationFile()
                    ==
                    "managededit.conf")
-      self.assert_(self.c2_.getConfigurationFileFullPath()
+      self.assertTrue(self.c2_.getConfigurationFileFullPath()
                    ==
                    os.path.join(self.c2_.getConfigurationDirectory(),
                                 self.c2_.getConfigurationFile()))
@@ -65,17 +65,17 @@ class ConfigurationTest(unittest.TestCase):
       self.removeConfDir(self.confDir_)
       os.mkdir(self.c2_.getConfigurationDirectory())
 
-      self.assert_(self.c2_.configurationFileExists() == False)
+      self.assertTrue(self.c2_.configurationFileExists() == False)
       self.c2_.createSampleConfigurationFile(self.c2_.getConfigurationFileFullPath())
 
-      self.assert_(self.c2_.configurationFileExists() == True)
+      self.assertTrue(self.c2_.configurationFileExists() == True)
 
       os.remove(self.c2_.getConfigurationFileFullPath())
       self.removeConfDir(self.c2_.getConfigurationDirectory())
 
       # have it make its own config file.
       c3 = Configuration(self.confDir_, True)
-      self.assert_(self.c2_.configurationFileExists() == True)
+      self.assertTrue(self.c2_.configurationFileExists() == True)
 
       # Now find out what happens when this is true, but the file already exists.
       c4 = Configuration(self.confDir_, True)

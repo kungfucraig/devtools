@@ -8,10 +8,10 @@ from managededit.searchpath import *
 class SearchPathTest(unittest.TestCase):
 
    def setUp(self):
-      print "Setup"
+      print("Setup")
 
    def tearDown(self):
-      print "TearDown"
+      print("TearDown")
 
 
 if __name__ == "__main__":

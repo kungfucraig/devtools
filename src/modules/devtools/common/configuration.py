@@ -110,7 +110,7 @@ class Configuration:
       """
       if not isinstance(option, Option):
          raise ValueError("Expected an object of type Option as an input.")
-      if self.options_.has_key(option.getKey()):
+      if option.getKey() in self.options_:
          raise RuntimeError("The option '" + option.getKey() + "' already exists.")
       self.options_[option.getKey()] = option
 

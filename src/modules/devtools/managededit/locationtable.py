@@ -138,7 +138,7 @@ class LocationTable:
       c.execute('''SELECT * FROM %s''' % TABLE_NAME)
       try:
          for row in c:
-            print row
+            print(row)
       finally:
          self._closedb(conn)
 
@@ -219,7 +219,7 @@ class SearchResult:
       i = 0
       while i < len(self.results_):
          uniquePathsForGroup = self._uniqifyGroup(i);
-         for (j, u) in zip(range(i, i+len(uniquePathsForGroup)),uniquePathsForGroup):
+         for (j, u) in zip(list(range(i, i+len(uniquePathsForGroup))),uniquePathsForGroup):
             if not u:
                out = "%d. %s\n" % (i, self.results_[j][0])
             else:
