@@ -127,7 +127,7 @@ def findRecord(configuration, pattern):
    while len(res) > 1:
       res.list()
       sys.stderr.write("> ")
-      criteria = eval(input())
+      criteria = input()
       res.narrow(criteria)
 
    if len(res) == 1:
@@ -146,7 +146,7 @@ def findDirectory(configuration, pattern):
    while not res.getCommonDirectory() and len(res):
       res.list()
       sys.stderr.write("> ")
-      criteria = eval(input())
+      criteria = input()
       res.narrow(criteria)
 
    return os.path.dirname(res[0][1]) if len(res) else None
